@@ -1,0 +1,24 @@
+/**
+ * Stable, machine readable error codes. Clients (e.g. the mobile app) branch on these,
+ * never on the human readable message.
+ */
+export enum ErrorCode {
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  UNAUTHORIZED = 'UNAUTHORIZED',
+  FORBIDDEN = 'FORBIDDEN',
+  NOT_FOUND = 'NOT_FOUND',
+  RATE_LIMITED = 'RATE_LIMITED',
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+
+  // Locations
+  TIMESTAMP_IN_FUTURE = 'TIMESTAMP_IN_FUTURE',
+  TIMESTAMP_TOO_OLD = 'TIMESTAMP_TOO_OLD',
+  INVALID_COORDINATES = 'INVALID_COORDINATES',
+
+  // Areas
+  INVALID_POLYGON = 'INVALID_POLYGON',
+  AREA_NAME_CONFLICT = 'AREA_NAME_CONFLICT',
+
+  // Logs
+  INVALID_CURSOR = 'INVALID_CURSOR',
+}
