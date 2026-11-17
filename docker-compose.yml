@@ -29,7 +29,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: location_tracking
-    ports: ['5432:5432']
+    # No host port on purpose: only api/worker/migrate talk to it, over the compose network.
+    # This avoids clashes with a PostgreSQL already running on the host.
     volumes: [pgdata:/var/lib/postgresql/data]
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres -d location_tracking']
@@ -41,7 +42,7 @@ services:
     image: redis:7.4-alpine
     # AOF persistence: queued locations survive a Redis restart.
     command: ['redis-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
-    ports: ['6379:6379']
+    # No host port on purpose (see postgres).
     volumes: [redisdata:/data]
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
