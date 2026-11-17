@@ -15,8 +15,8 @@ export class ListLogsQuery {
   areaId?: string;
 
   @ApiPropertyOptional({
-    description: 'Entries at or after this time (ISO 8601)',
-    example: '2026-11-17T00:00:00Z',
+    // No `example`: Swagger UI would prefill it and silently filter the results.
+    description: 'Entries at or after this time (ISO 8601), e.g. 2026-11-17T00:00:00Z',
   })
   @IsOptional()
   @IsISO8601({ strict: true })
@@ -27,13 +27,13 @@ export class ListLogsQuery {
   @IsISO8601({ strict: true })
   to?: string;
 
-  @ApiPropertyOptional({ default: 50, minimum: 1, maximum: 200 })
+  @ApiPropertyOptional({ type: Number, default: 50, minimum: 1, maximum: 200 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(200)
-  limit = 50;
+  limit: number = 50;
 
   @ApiPropertyOptional({ description: '`nextCursor` from the previous page' })
   @IsOptional()

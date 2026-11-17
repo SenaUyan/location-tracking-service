@@ -12,6 +12,7 @@ import { buildDataSourceOptions } from '../src/database/typeorm-options';
 import { TrackingService } from '../src/tracking/tracking.service';
 import { RetentionProcessor } from '../src/worker/retention.processor';
 import { WorkerModule } from '../src/worker/worker.module';
+import { buildSwaggerDocument } from '../src/swagger';
 
 const ADMIN = { 'x-api-key': TEST_ENV.API_KEY_ADMIN };
 const INGEST = { 'x-api-key': TEST_ENV.API_KEY_INGEST };
@@ -104,6 +105,23 @@ describe('Location Tracking Service (e2e)', () => {
       http()
         .get('/health/ready')
         .expect(200, { status: 'ok', checks: { database: 'up', redis: 'up' } }));
+  });
+
+  describe('Swagger document', () => {
+    it('declares a concrete type for every query parameter (an "object" query param hangs Swagger UI)', () => {
+      const doc = buildSwaggerDocument(api);
+      const params = Object.entries(doc.paths).flatMap(([path, item]) =>
+        Object.values(item).flatMap(
+          (op: { parameters?: { in: string; name: string; schema?: { type?: string } }[] }) =>
+            (op.parameters ?? [])
+              .filter((p) => p.in === 'query')
+              .map((p) => ({ path, name: p.name, type: p.schema?.type })),
+        ),
+      );
+      expect(params.length).toBeGreaterThan(0);
+      expect(params.filter((p) => !p.type || p.type === 'object')).toEqual([]);
+      expect(params).toContainEqual({ path: '/logs', name: 'limit', type: 'number' });
+    });
   });
 
   describe('POST /areas', () => {
